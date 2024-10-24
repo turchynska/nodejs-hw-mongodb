@@ -21,6 +21,7 @@
     "express": "^4.21.1",
     "mongodb": "^6.10.0",
     "mongoose": "^8.7.2",
-    "pino-http": "^10.3.0"
+    "pino-http": "^10.3.0",
+    "pino-pretty": "^11.3.0"
   }
 }

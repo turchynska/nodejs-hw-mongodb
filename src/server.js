@@ -4,7 +4,7 @@ import cors from 'cors';
 import { getAllContacts, getContactById } from './services/contacts.js';
 import { env } from './utils/env.js';
 
-const PORT = Number(env('PORT', '3000'));
+const PORT = Number(env('PORT', '3040'));
 
 export const setupServer = () => {
   const app = express();
@@ -30,7 +30,7 @@ export const setupServer = () => {
             data: contacts,
         });
     });
-    app.get('/contacts/:contactId', async (req, req) => {
+    app.get('/contacts/:contactId', async (req, res) => {
         const { contactId } = req.params;
         const contact = await getContactById(contactId);
 
@@ -52,12 +52,12 @@ export const setupServer = () => {
         });
     });
 
-    app.use((err, req, res, next) => {
-        res.status(500).json({
-            message: 'Something went wrong',
-            error: err.message,
-        });
-    });
+    // app.use((err, req, res, next) => {
+    //     res.status(500).json({
+    //         message: 'Something went wrong',
+    //         error: err.message,
+    //     });
+    // });
 
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
