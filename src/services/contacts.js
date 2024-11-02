@@ -9,3 +9,14 @@ export const getContactById = async (contactId) => {
     const contact = await ContactsCollection.findById(contactId);
     return contact;
 };
+
+export const addContact = async(payload) => {
+    const contact = await ContactsCollection.create(payload);
+    return contact;
+}
+
+export const updateContact = async (contactId, contact) => {
+    return ContactsCollection.findByIdAndUpdate(contactId, contact, { new: true });
+};
+
+export const deleteContact = filter => ContactsCollection.findOneAndDelete(filter);
