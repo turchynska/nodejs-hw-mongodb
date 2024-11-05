@@ -19,4 +19,10 @@ export const updateContact = async (contactId, contact) => {
     return ContactsCollection.findByIdAndUpdate(contactId, contact, { new: true });
 };
 
-export const deleteContact = filter => ContactsCollection.findOneAndDelete(filter);
+export const deleteContact = async (contactId) => {
+  const contact = await ContactsCollection.findByIdAndDelete({
+    _id: contactId,
+  });
+
+  return contact;
+};
