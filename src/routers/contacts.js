@@ -14,7 +14,7 @@ contactsRouter.get('/:contactId', isValidId,  ctrlWrapper(contactControllers.get
 
 contactsRouter.post('/', validateBody(createContactsSchema), ctrlWrapper(contactControllers.addContactController));
 
-contactsRouter.patch('/:contactId',validateBody(createContactsSchema), isValidId, ctrlWrapper(contactControllers.patchContactController));
+contactsRouter.patch('/:contactId', validateBody(createContactsSchema), isValidId, ctrlWrapper(contactControllers.patchContactController));
 
 contactsRouter.delete('/:contactId',isValidId, ctrlWrapper(contactControllers.deleteContactController));
 
