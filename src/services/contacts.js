@@ -2,7 +2,7 @@ import { ContactsCollection } from "../db/models/contacts.js";
 
 
 
-export const getAllContacts = async ({ page, perPage, sortBy, sortOrder, filter }) => {
+export const getAllContacts = async ({ page, perPage, sortBy, sortOrder, filter, userId }) => {
   const skip = page > 0 ? (page - 1) * perPage : 0;
 
   const contactQuery = ContactsCollection.find();
@@ -14,6 +14,9 @@ export const getAllContacts = async ({ page, perPage, sortBy, sortOrder, filter 
   if (typeof filter.isFavorite !== 'undefined') {
     contactQuery.where('isFavourite').equals(filter.isFavorite);
   }
+ if (filter.userId || userId) {
+   contactQuery.where('userId').equals(userId); 
+ }
 
   const [total, contacts] = await Promise.all([
     ContactsCollection.countDocuments(contactQuery),

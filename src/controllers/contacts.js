@@ -1,4 +1,3 @@
-import e from 'express';
 import {
   addContact,
   getAllContacts,
@@ -17,13 +16,16 @@ export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
   const filter = parseFilterParams(req.query);
+
+ 
   
   const contacts = await getAllContacts({
     page,
     perPage,
     sortBy,
     sortOrder,
-    filter
+    filter,
+    userId: req.user._id,
   });
 
   res.status(200).json({
@@ -54,7 +56,8 @@ export const getContactIdController = async (req, res, next) => {
 };
 
 export const addContactController = async (req, res) => {
-  const contact = await addContact(req.body);
+  const { _id: userId } = req.user;
+  const contact = await addContact({...req.body, userId});
 
   res.status(201).json({
     status: 201,
