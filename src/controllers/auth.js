@@ -60,11 +60,16 @@ export const refreshSessionControllers = async (req, res) => {
 };
 
 export const logoutControllers = async (req, res) => {
-  if (req.cookies.sessionId) {
-    await logoutUser();
+  const { sessionId } = req.cookies;
+
+  if (!sessionId) {
+    return res.status(400).json({ message: 'Session ID not found in cookies' });
   }
 
-  res.clearCookie('sessionId');
-  res.clearCookie('refreshToken');
-  res.status(204).send()
-}
+ 
+  await logoutUser(sessionId); 
+  
+    res.clearCookie('sessionId');
+    res.clearCookie('refreshToken');
+    res.status(204).send();
+};
