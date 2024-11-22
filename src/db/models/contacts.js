@@ -27,11 +27,14 @@ const contactsSchema = new Schema(
       required: true,
       default: 'personal',
     },
-    userId:
-    {
+    userId: {
       type: Schema.Types.ObjectId,
       req: 'user',
-      required: true
+      required: true,
+    },
+    photo: {
+      type: String,
+      default: null,
     },
   },
   {

@@ -22,4 +22,14 @@ export const createContactsSchema = Joi.object({
       'any.required': 'Contact type is required',
     }),
   userId: Joi.string(),
+  photo: Joi.any().optional(),
+});
+
+export const patchContactSchema = Joi.object({
+  name: Joi.string(),
+  phoneNumber: Joi.string(),
+  email: Joi.string().email(),
+  isFavourite: Joi.boolean(),
+  contactType: Joi.string().valid('work', 'home', 'personal'),
+  photo: Joi.string(),
 });

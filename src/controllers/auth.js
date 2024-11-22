@@ -1,5 +1,19 @@
-import { registerUser, loginUser, refreshUserSession, logoutUser } from '../services/auth.js';
+import { registerUser, loginUser, refreshUserSession, logoutUser, requestResetToken, resetPassword } from '../services/auth.js';
 import { SEVEN_DAY } from '../constants/index.js';
+
+const sessionFunc = (res, session) => {
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + SEVEN_DAY),
+  });
+
+  
+  res.cookie('sessionId', session.id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + SEVEN_DAY),
+  });
+};
+
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
@@ -12,64 +26,68 @@ export const registerUserController = async (req, res) => {
 };
 
 export const loginUserController = async (req, res) => {
-  const { accessToken, refreshToken, SEVEN_DAY, _id, refreshTokenValidUntil } =
-    await loginUser(req.body);
+  const session = await loginUser(req.body);
 
- 
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    expires: SEVEN_DAY,
-  });
-
-  res.cookie('sessionId', _id, {
-    httpOnly: true,
-    expires: refreshTokenValidUntil,
-  });
+  sessionFunc(res, session);
 
   res.json({
     status: 200,
     message: 'Successfully login user',
     data: {
-      accessToken,
+      accessToken: session.accessToken,
     },
   });
 };
 
 export const refreshSessionControllers = async (req, res) => {
+  const { sessionId, refreshToken } = req.cookies;
+  const session = await refreshUserSession({ sessionId, refreshToken });
 
-  const { accessToken, refreshToken, SEVEN_DAY, _id, refreshTokenValidUntil } =
-    await refreshUserSession(req.cookies);
-
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    expires: SEVEN_DAY,
-  });
-
-  res.cookie('sessionId', _id, {
-    httpOnly: true,
-    expires: refreshTokenValidUntil,
-  });
+  sessionFunc(res, session);
 
   res.json({
     status: 200,
     message: 'Successfully refreshed session',
     data: {
-      accessToken,
+      accessToken: session.accessToken,
     },
   });
 };
 
 export const logoutControllers = async (req, res) => {
-  const { sessionId } = req.cookies;
-
-  if (!sessionId) {
-    return res.status(400).json({ message: 'Session ID not found in cookies' });
-  }
-
- 
-  await logoutUser(sessionId); 
+  if (req.cookies.sessionId) {
+    await loginUser(req.cookies.sessionId);
+}
   
     res.clearCookie('sessionId');
     res.clearCookie('refreshToken');
     res.status(204).send();
+};
+
+export const requestResetEmailController = async (req, res) => {
+  await requestResetToken(req.body.email);
+
+  res.json({
+    status: 200,
+    message: 'Reset password email has been successfully sent.',
+    data: {},
+  });
+}
+
+export const resetPasswordController = async (req, res) => {
+  try {
+    await resetPassword(req.body); // Ваша логіка скидання пароля
+    res.json({
+      status: 200,
+      message: 'Password has been successfully reset.',
+      data: {},
+    });
+  } catch (error) {
+    console.error('Error in resetPasswordController:', error); // Логування помилки
+    res.status(500).json({
+      status: 500,
+      message: 'Internal Server Error',
+      error: error.message,
+    });
+  }
 };

@@ -7,6 +7,7 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { logger } from './middlewares/logger.js';
 import router from './routers/index.js';
+import { UPLOAD_DIR } from './constants/index.js';
 
 const PORT = Number(env('PORT', '3040'));
 
@@ -15,6 +16,7 @@ export const setupServer = () => {
   app.use(express.json());
   app.use(cors());
   app.use(cookieParser());
+  app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.use(logger);
 
@@ -26,7 +28,7 @@ export const setupServer = () => {
 
   app.use(router);
     
-  app.use(notFoundHandler);
+  app.use('*', notFoundHandler);
   app.use(errorHandler);
 
   app.listen(PORT, () => {
