@@ -84,14 +84,10 @@ export const addContactController = async (req, res) => {
   });
 };
 
-export const patchContactController = async (req, res, next) => {
+export const patchContactController = async (req, res) => {
     const { contactId } = req.params;
     const userId = req.user?._id;
     const photo = req.file;
-
-    console.log('Contact ID:', contactId);
-    console.log('User ID:', userId);
-    console.log('Request Body:', req.body);
 
     if (!mongoose.Types.ObjectId.isValid(contactId)) {
       return next(createHttpError(400, 'Invalid contact ID format'));
