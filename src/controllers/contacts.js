@@ -85,35 +85,43 @@ export const addContactController = async (req, res) => {
 };
 
 export const patchContactController = async (req, res, next) => {
-  const { contactId } = req.params;
-  const userId = req.user._id;
-  const photo = req.file;
+    const { contactId } = req.params;
+    const userId = req.user?._id;
+    const photo = req.file;
 
-  let photoUrl;
-  if (photo) {
-    if (env(ENABLE_CLOUDINARY) === 'true') {
-      photoUrl = await uploadToCloudinary(photo);
-    } else {
-      photoUrl = await saveFileToUploadDir(photo);
+    console.log('Contact ID:', contactId);
+    console.log('User ID:', userId);
+    console.log('Request Body:', req.body);
+
+    if (!mongoose.Types.ObjectId.isValid(contactId)) {
+      return next(createHttpError(400, 'Invalid contact ID format'));
     }
-  }
-  if (!mongoose.Types.ObjectId.isValid(contactId)) {
-    return next(createHttpError(400, 'Invalid contact ID format'));
-  }
 
-  const updatedContact = await updateContact(contactId, {...req.body, photo: photoUrl}, req.userId);
+    let photoUrl;
+    if (photo) {
+      if (env(ENABLE_CLOUDINARY) === 'true') {
+        photoUrl = await uploadToCloudinary(photo);
+      } else {
+        photoUrl = await saveFileToUploadDir(photo);
+      }
+    }
 
-  if (!updatedContact) {
-    return next(createHttpError(404, 'Contact not found'));
-  }
+    const updatedContact = await updateContact(
+      contactId,
+      { ...req.body, photo: photoUrl },
+      userId,
+    );
 
-  res.json({
-    status: 200,
-    message: 'Successfully patched a contact!',
-    data: updatedContact,
-  });
+    if (!updatedContact) {
+      return next(createHttpError(404, 'Contact not found or user mismatch'));
+    }
+
+    res.json({
+      status: 200,
+      message: 'Successfully patched a contact!',
+      data: updatedContact,
+    });
 };
-
 export const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const userId = req.user._id;
