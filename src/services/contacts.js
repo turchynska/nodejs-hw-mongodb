@@ -2,6 +2,7 @@ import { ContactsCollection } from "../db/models/contacts.js";
 
 
 
+
 export const getAllContacts = async ({ page, perPage, sortBy, sortOrder, filter, userId }) => {
   const skip = page > 0 ? (page - 1) * perPage : 0;
 

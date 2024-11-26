@@ -3,6 +3,7 @@ import { findSession, findUser } from "../services/auth.js";
 
 export const authenticate = async (req, res, next) => {
     const authHeader = req.get("Authorization");
+    
     if (!authHeader) {
        return next(createHttpError(401, 'Authorization header missing'));
     }

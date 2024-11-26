@@ -56,7 +56,7 @@ export const refreshSessionControllers = async (req, res) => {
 
 export const logoutControllers = async (req, res) => {
   if (req.cookies.sessionId) {
-    await loginUser(req.cookies.sessionId);
+    await logoutUser(req.cookies.sessionId);
 }
   
     res.clearCookie('sessionId');
@@ -75,19 +75,10 @@ export const requestResetEmailController = async (req, res) => {
 }
 
 export const resetPasswordController = async (req, res) => {
-  try {
-    await resetPassword(req.body); // Ваша логіка скидання пароля
-    res.json({
-      status: 200,
-      message: 'Password has been successfully reset.',
-      data: {},
-    });
-  } catch (error) {
-    console.error('Error in resetPasswordController:', error); // Логування помилки
-    res.status(500).json({
-      status: 500,
-      message: 'Internal Server Error',
-      error: error.message,
-    });
-  }
+  await resetPassword(req.body);
+  res.json({
+    status: 200,
+    message: 'Password has been successfully reset.',
+    data: {},
+  });
 };
