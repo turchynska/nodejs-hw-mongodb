@@ -14,8 +14,13 @@ tags:
   description: Auth operations.
 servers:
   - url: http://localhost:3000
-  - url: #посилання на задеплоєний сайт
+  - url: https://contacts-app-update3.onrender.com
 paths:
+  /contacts:
+    get: 
+      $ref: ../swagger/paths/contacts/get.yaml
+    post: 
+      $ref: ../swagger/paths/contacts/post.yaml
  /contacts/{id}:
   get: 
     $ref: ../swagger/paths/contacts/{id}/get.yaml
