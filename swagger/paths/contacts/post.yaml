@@ -4,7 +4,7 @@ summary: Create Contact
 operationId: createContact
 description: 'Create contact with payload'
 security:
-  -bearerAuth: []
+ - bearerAuth: []
 requestBody:
   content:
     multipart/form-data:
@@ -55,6 +55,6 @@ responses:
               example: 'Successfully created a contact'
             data:
               type: object
-              $reg: '../../components/schemas/contact.yaml'
-'401':
-  $ref: '../../components/responses/401.yaml'
+$ref: "../../components/schemas/contact.yaml"
+'404':
+ $ref: '../../components/responses/404.yaml'
