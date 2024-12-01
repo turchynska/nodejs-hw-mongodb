@@ -1,14 +1,14 @@
-tags:
-  - Contacts
-summary: Create Contact
+tags: 
+  -  Contacts
+summary: Create contact
 operationId: createContact
 description: 'Create contact with payload'
-security:
- - bearerAuth: []
-requestBody:
-  content:
+security: 
+  -  bearerAuth: []
+requestBody: 
+  content: 
     multipart/form-data:
-      schema: 
+      schema:
         type: object
         required:
           - name
@@ -16,33 +16,37 @@ requestBody:
           - contactType
         properties:
           name:
-            description: 'Contact`s name'
+            description: "Contact's name"
             type: string
-            example: "Kate Turchynska"
+            example: 'Kate Turchynska'
           phoneNumber:
-            description: 'Contact`s number'
+            description: "Contact's number"
             type: string
-            example: "+3877628364"
-          contactType: 
-            description: 'Contact Type'
+            example: '+38064349561'
+          contactType:
+            description: "Contact type"
             type: string
-            enum: ['work', 'personal', 'home']
+            enum: ['work', 'home', 'personal']
           email:
-            description: 'Contact`s email'
+            description: "Contact's email"
             type: string
             example: 'drop2093@gmail.com'
+          isFavourite:
+            description: 'Favorite contact'
+            type: boolean
+            example: false
           photo:
-            description: 'Contact`s photo'
+            description: "Contact's photo"
             type: string
             format: binary
-responses:
+responses: 
   '201':
     description: 'Created contact'
     content:
       application/json:
         schema:
           type: object
-          required: 
+          required:
             - status
             - message
             - data
@@ -52,9 +56,9 @@ responses:
               example: 201
             message:
               type: string
-              example: 'Successfully created a contact'
+              example: Successfully created a contact!
             data:
               type: object
-$ref: "../../components/schemas/contact.yaml"
-'404':
- $ref: '../../components/responses/404.yaml'
+              $ref: '../../components/schemas/contact.yaml'
+  '404':
+    $ref: '../../components/responses/404.yaml'

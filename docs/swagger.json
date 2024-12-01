@@ -21,10 +21,6 @@
     {
       "name": "Contacts",
       "description": "Operations about users."
-    },
-    {
-      "name": "Auth",
-      "description": "Auth operations."
     }
   ],
   "paths": {
@@ -182,192 +178,294 @@
         }
       },
       "post": {
-        "type": "object",
-        "required": [
-          "_id",
-          "name",
-          "phoneNumber",
-          "contactType"
+        "tags": [
+          "Contacts"
         ],
-        "properties": {
-          "_id": {
-            "description": "Contact's id",
-            "type": "string",
-            "example": "65e4decdd286b30065d54af9"
+        "summary": "Create contact",
+        "operationId": "createContact",
+        "description": "Create contact with payload",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "phoneNumber",
+                  "contactType"
+                ],
+                "properties": {
+                  "name": {
+                    "description": "Contact's name",
+                    "type": "string",
+                    "example": "Kate Turchynska"
+                  },
+                  "phoneNumber": {
+                    "description": "Contact's number",
+                    "type": "string",
+                    "example": "+38064349561"
+                  },
+                  "contactType": {
+                    "description": "Contact type",
+                    "type": "string",
+                    "enum": [
+                      "work",
+                      "home",
+                      "personal"
+                    ]
+                  },
+                  "email": {
+                    "description": "Contact's email",
+                    "type": "string",
+                    "example": "drop2093@gmail.com"
+                  },
+                  "isFavourite": {
+                    "description": "Favorite contact",
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "photo": {
+                    "description": "Contact's photo",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created contact",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully created a contact!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/contact"
+                    }
+                  }
+                }
+              }
+            }
           },
-          "name": {
-            "description": "Contact's name",
-            "type": "string",
-            "example": "Kate Turchynska"
-          },
-          "phoneNumber": {
-            "description": "Contact's number",
-            "type": "string",
-            "example": "+38073698273"
-          },
-          "email": {
-            "description": "Contact's email",
-            "type": "string",
-            "example": "drop2093@gmail.com"
-          },
-          "contactType": {
-            "description": "Contacts's type",
-            "type": "string",
-            "enum": [
-              "work",
-              "home",
-              "personal"
-            ]
-          },
-          "isFavourite": {
-            "description": "Favorite contact",
-            "type": "boolean",
-            "example": false
-          },
-          "userId": {
-            "description": "Contact's user id",
-            "type": "string",
-            "example": "65e4decdd286b30065d54af9"
-          },
-          "photo": {
-            "description": "Link to contacts's photo",
-            "type": "string",
-            "example": "https://res.cloudinary.com/dyzsarebb/image/upload/v1732893802/priroda74_074_ugnxjy.jpg"
+          "404": {
+            "$ref": "#/components/responses/404"
           }
         }
       }
     },
     "/contacts/{id}": {
       "get": {
-        "404": {
-          "description": "Unauthorized error",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "status",
-                  "message",
-                  "data"
-                ],
-                "properties": {
-                  "status": {
-                    "type": "integer",
-                    "example": 404
-                  },
-                  "message": {
-                    "type": "string",
-                    "example": "UnauthorizedError"
-                  },
-                  "data": {
-                    "type": "object",
-                    "required": [
-                      "message"
-                    ],
-                    "properties": {
-                      "message": {
-                        "type": "string",
-                        "example": "Access token expired"
-                      }
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get contact by id",
+        "operationId": "getContact",
+        "description": "Get contact by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "65ca67e7ae7f10c88b598384"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get contact by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully found contact with id 65ca67e7ae7f10c88b598384!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/contact"
                     }
                   }
                 }
               }
             }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
           }
         }
       },
       "patch": {
-        "type": "object",
-        "required": [
-          "_id",
-          "name",
-          "phoneNumber",
-          "contactType"
+        "tags": [
+          "Contacts"
         ],
-        "properties": {
-          "_id": {
-            "description": "Contact's id",
-            "type": "string",
-            "example": "65e4decdd286b30065d54af9"
-          },
-          "name": {
-            "description": "Contact's name",
-            "type": "string",
-            "example": "Kate Turchynska"
-          },
-          "phoneNumber": {
-            "description": "Contact's number",
-            "type": "string",
-            "example": "+38073698273"
-          },
-          "email": {
-            "description": "Contact's email",
-            "type": "string",
-            "example": "drop2093@gmail.com"
-          },
-          "contactType": {
-            "description": "Contacts's type",
-            "type": "string",
-            "enum": [
-              "work",
-              "home",
-              "personal"
-            ]
-          },
-          "isFavourite": {
-            "description": "Favorite contact",
-            "type": "boolean",
-            "example": false
-          },
-          "userId": {
-            "description": "Contact's user id",
-            "type": "string",
-            "example": "65e4decdd286b30065d54af9"
-          },
-          "photo": {
-            "description": "Link to contacts's photo",
-            "type": "string",
-            "example": "https://res.cloudinary.com/dyzsarebb/image/upload/v1732893802/priroda74_074_ugnxjy.jpg"
+        "summary": "Update contact by id",
+        "operationId": "updateContact",
+        "description": "Update contact by id",
+        "security": [
+          {
+            "bearerAuth": []
           }
-        }
-      },
-      "delete": {
-        "404": {
-          "description": "Unauthorized error",
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the contact to update"
+          }
+        ],
+        "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "status",
-                  "message",
-                  "data"
-                ],
                 "properties": {
-                  "status": {
-                    "type": "integer",
-                    "example": 404
-                  },
-                  "message": {
+                  "name": {
+                    "description": "Contact's name",
                     "type": "string",
-                    "example": "UnauthorizedError"
+                    "example": "Kate Turchynska"
                   },
-                  "data": {
-                    "type": "object",
-                    "required": [
-                      "message"
-                    ],
-                    "properties": {
-                      "message": {
-                        "type": "string",
-                        "example": "Access token expired"
-                      }
+                  "phoneNumber": {
+                    "description": "Contact's number",
+                    "type": "string",
+                    "example": "+3807635635"
+                  },
+                  "contactType": {
+                    "description": "Contact type",
+                    "type": "string",
+                    "enum": [
+                      "work",
+                      "home",
+                      "personal"
+                    ]
+                  },
+                  "email": {
+                    "description": "Contact's email",
+                    "type": "string",
+                    "example": "drop2093@gmail.com"
+                  },
+                  "isFavourite": {
+                    "description": "Favorite contact",
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "photo": {
+                    "description": "Contact's photo",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated contact",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully updated contact with id 65ca67e7ae7f10c88b598384!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/contact"
                     }
                   }
                 }
               }
             }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Delete contact by id",
+        "operationId": "deleteContact",
+        "description": "Delete contact by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "65ca67e7ae7f10c88b598384"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete contact by id"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
           }
         }
       }
@@ -439,36 +537,34 @@
     },
     "responses": {
       "404": {
-        "404": {
-          "description": "Unauthorized error",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "status",
-                  "message",
-                  "data"
-                ],
-                "properties": {
-                  "status": {
-                    "type": "integer",
-                    "example": 404
-                  },
-                  "message": {
-                    "type": "string",
-                    "example": "UnauthorizedError"
-                  },
-                  "data": {
-                    "type": "object",
-                    "required": [
-                      "message"
-                    ],
-                    "properties": {
-                      "message": {
-                        "type": "string",
-                        "example": "Access token expired"
-                      }
+        "description": "Unauthorized error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "UnauthorizedError"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Access token expired"
                     }
                   }
                 }

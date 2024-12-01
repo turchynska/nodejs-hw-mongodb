@@ -25,7 +25,7 @@ requestBody:
           phoneNumber:
             description: "Contact's number"
             type: string
-            example: '+3806735429'
+            example: '+3807635635'
           contactType:
             description: "Contact type"
             type: string
@@ -62,6 +62,6 @@ responses:
               example: Successfully updated contact with id 65ca67e7ae7f10c88b598384!
             data:
               type: object
-$ref: ../../../components/schemas/contact.yaml
-'404':
+              $ref: ../../../components/schemas/contact.yaml
+  '404':
     $ref: '../../../components/responses/404.yaml'
